@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Psychotechnique — Assistant Administratif Comptable</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1a2740;
+    --navy-light: #243350;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --cream: #f7f4ef;
+    --cream-dark: #ede9e0;
+    --text: #1a2740;
+    --text-muted: #6b7a99;
+    --white: #ffffff;
+    --success: #2d6a4f;
+    --error: #a33030;
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 16px;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--navy);
+    color: var(--white);
+    padding: 2.5rem 2rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: -60px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: rgba(201,168,76,0.08);
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; right: -40px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(201,168,76,0.06);
+  }
+  .header-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.75rem;
+  }
+  .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+  }
+  .header p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.6);
+    font-weight: 300;
+  }
+
+  /* TIMER */
+  .timer-bar {
+    background: var(--navy-light);
+    padding: 0.75rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .timer-icon { font-size: 18px; }
+  .timer-label { font-size: 13px; color: rgba(255,255,255,0.5); }
+  .timer-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--gold);
+    min-width: 60px;
+    text-align: center;
+    letter-spacing: 1px;
+  }
+  .timer-value.warning { color: #e07b30; }
+  .timer-value.danger { color: #d44; animation: pulse 0.8s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+  /* PROGRESS */
+  .progress-wrap {
+    background: var(--cream-dark);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .progress-bar-bg {
+    flex: 1;
+    height: 6px;
+    background: rgba(26,39,64,0.15);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--navy), var(--gold));
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+  .progress-text {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  /* MAIN */
+  .main { max-width: 700px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* SECTION HEADER */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 2.5rem 0 1rem;
+  }
+  .section-tag {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: var(--navy);
+    color: var(--gold);
+    padding: 4px 10px;
+    border-radius: 99px;
+  }
+  .section-line { flex: 1; height: 1px; background: var(--cream-dark); }
+
+  /* QUESTION CARD */
+  .question-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    border: 1px solid var(--cream-dark);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: box-shadow 0.2s;
+  }
+  .question-card:hover { box-shadow: 0 4px 20px rgba(26,39,64,0.06); }
+
+  .q-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 13px;
+    color: var(--gold);
+    background: var(--navy);
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--navy);
+    line-height: 1.5;
+    flex: 1;
+  }
+  .q-hint {
+    font-size: 12px;
+    color: var(--text-muted);
+    background: var(--cream);
+    border-left: 3px solid var(--gold);
+    padding: 6px 10px;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 1rem;
+    font-style: italic;
+  }
+
+  /* OPTIONS */
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1.5px solid var(--cream-dark);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--cream);
+    user-select: none;
+  }
+  .option-label:hover { border-color: var(--navy); background: var(--white); }
+  .option-label input { display: none; }
+  .option-dot {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 2px solid var(--cream-dark);
+    flex-shrink: 0;
+    transition: all 0.15s;
+    background: var(--white);
+  }
+  .option-label:has(input:checked) {
+    border-color: var(--navy);
+    background: var(--navy);
+    color: var(--white);
+  }
+  .option-label:has(input:checked) .option-dot {
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+
+  /* CORRECTION STATES */
+  .option-label.correct {
+    border-color: var(--success);
+    background: #eaf4ef;
+    color: var(--success);
+    font-weight: 500;
+  }
+  .option-label.correct .option-dot { background: var(--success); border-color: var(--success); }
+  .option-label.wrong {
+    border-color: var(--error);
+    background: #faeaea;
+    color: var(--error);
+  }
+  .option-label.wrong .option-dot { background: var(--error); border-color: var(--error); }
+  .option-label.disabled { pointer-events: none; }
+
+  /* SUBMIT */
+  .submit-wrap { text-align: center; margin-top: 2.5rem; }
+  .btn-submit {
+    background: var(--navy);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 14px 40px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+  }
+  .btn-submit:hover { background: var(--navy-light); transform: translateY(-1px); }
+  .btn-submit:active { transform: translateY(0); }
+
+  /* RESULTS */
+  #results {
+    display: none;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
+    text-align: center;
+  }
+  .result-badge {
+    display: inline-block;
+    font-family: 'DM Serif Display', serif;
+    font-size: 4rem;
+    color: var(--navy);
+    margin-bottom: 0.5rem;
+  }
+  .result-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.8rem;
+    color: var(--navy);
+    margin-bottom: 0.5rem;
+  }
+  .result-sub {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+  }
+  .result-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 2rem;
+  }
+  .result-stat {
+    background: var(--white);
+    border: 1px solid var(--cream-dark);
+    border-radius: var(--radius);
+    padding: 1.25rem 1rem;
+  }
+  .result-stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: var(--navy);
+  }
+  .result-stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  .result-bar-section { text-align: left; margin-bottom: 2rem; }
+  .rb-label { font-size: 13px; font-weight: 500; color: var(--navy); margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .rb-bg { height: 8px; background: var(--cream-dark); border-radius: 99px; margin-bottom: 10px; overflow: hidden; }
+  .rb-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--navy), var(--gold)); }
+  .result-mention {
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 99px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
+  .mention-excellent { background: #eaf4ef; color: var(--success); }
+  .mention-bien { background: #e8f0fb; color: #1a50a0; }
+  .mention-moyen { background: #fef6e4; color: #8a6200; }
+  .mention-insuffisant { background: #faeaea; color: var(--error); }
+
+  @media(max-width:480px){
+    .result-grid { grid-template-columns: 1fr 1fr; }
+    .header { padding: 2rem 1rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-label">Recrutement</div>
+  <h1>Test Psychotechnique</h1>
+  <p>Assistant Administratif &amp; Comptable — 14 questions</p>
+</div>
+
+<div class="timer-bar">
+  <span class="timer-icon">⏱</span>
+  <span class="timer-label">Temps restant :</span>
+  <span class="timer-value" id="timer">15:00</span>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-bar-bg">
+    <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+  </div>
+  <span class="progress-text" id="progress-text">0 / 14 répondues</span>
+</div>
+
+<div class="main" id="quiz-main">
+
+  <!-- SECTION 1 -->
+  <div class="section-header">
+    <span class="section-tag">Séries numériques</span>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- Q1 -->
+  <div class="question-card" data-q="1" data-answer="12">
+    <div class="q-header">
+      <div class="q-num">1</div>
+      <div class="q-text">Trouvez le nombre manquant dans la suite : <strong>3 — 6 — 9 — ? — 15 — 18</strong></div>
+    </div>
+    <div class="options">
+      <label class="option-label"><input type="radio" name="q1" value="10"><span class="option-dot"></span>10</label>
+      <label class="option-label"><input type="radio" name="q1" value="11"><span class="option-dot"></span>11</label>
+      <label class="option-label"><input type="radio" name="q1" value="12"><span class="option-dot"></span>12</label>
+      <label class="option-label"><input type="radio" name="q1" value="13"><span class="option-dot"></span>13</label>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="question-card" data-q="2" data-answer="8">
+    <div class="q-header">
+      <div class="q-num">2</div>
+      <div class="q-text">Trouvez le nombre manquant dans la suite : <strong>1 — 2 — 4 — ? — 16 — 32</strong></div>
+    </div>
+    <div class="options">
+      <label class="option-label"><input type="radio" name="q2" value="6"><span class="option-dot"></span>6</label>
+      <label class="option-label"><input type="radio" name="q2" value="8"><span class="option-dot"></span>8</label>
+      <label class="option-label"><input type="radio" name="q2" value="10"><span class="option-dot"></span>10</label>
+      <label class="option-label"><input type="radio" name="q2" value="12"><span class="option-dot"></span>12</label>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="question-card" data-q="3" data-answer="256">
+    <div class="q-header">
+      <div class="q-num">3</div>
+      <div class="q-text">Trouvez le nombre manquant dans la suite : <strong>1 — 4 — 27 — ? — 3125</strong></div>
+    </div>
+    <div class="q-hint">💡 Aide : chaque terme est un nombre élevé à une puissance particulière (1¹, 2², 3³…)</div>
+    <div class="options">
+      <label class="option-label"><input type="radio" name="q3" value="64"><span class="option-dot"></span>64</label>
+      <label class="option-label"><input type="radio" name="q3" value="128"><span class="option-dot"></span>128</label>
+      <label class="option-label"><input type="radio" name="q3" value="256"><span class="option-dot"></span>256</label>
+      <label class="option-label"><input type="radio" name="q3" value="512"><span class="option-dot"></span>512</label>
+    </div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section-header">
+    <span class="section-tag">Séries alphabétiques</span>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="question-card" data-q="4" data-answer="G">
+    <div class="q-header">
+      <div class="q-num">4</div>
+      <div class="q-text">Trouvez la lettre manquante : <strong>A — D — ? — J</strong></div>
+    </div>
+    <div class="options">
+      <label class="option-label"><input type="radio" name="q4" value="E"><span class="option-dot"></span>E</label>
+      <label class="option-label"><input type="radio" name="q4" value="F"><span class="option-dot"></span>F</label>
+      <label class="option-label"><input type="radio" name="q4" value="G"><span class="option-dot"></span>G</label>
+      <label class="option-label"><input type="radio" name="q4" value="H"><span class="option-dot"></span>H</label>
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="question-card" data-q="5" data-answer="W">
+    <div class="q-header">
+      <div class="q-num">5</div>
+      <div class="q-text">Trouvez la lettre manquante : <strong>Z — Y — X — ? — V</strong></div>
+    </div>
+    <div class="options">
+      <label class="option-label"><input type="radio" name="q5" value="T"><span class="option-dot"></span>T</label>
+      <label class="option-label"><input type="radio" name="q5" value="U"><span class="option-dot"></span>U</label>
+      <label class="option-label"><input type="radio" name="q5" value="W"><span class="option-dot"></span>W</label>
+      <label class="option-label"><input type="radio" name="q5" value="X"><span class="option-dot"></span>X</label>
+    </div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section-header">
+    <span class="section-tag">Calcul mental</span>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="question-card" data-q="6" data-answer="56">
+    <div class="q-header">
+      <div class="q-num">6</div>
+      <div class="q-text">Calculez : <strong>7 × 8 = ?</strong></div>
+    </div>
+    <div class="options">
+      <label class="option-label"><input type="radio" name="q6" value="48"><span class="option-dot"></span>48</label>
+      <label class="option-label"><input type="radio" name="q6" value="54"><span class="option-dot"></span>54</label>
+      <label class="option-label"><input type="radio" name="q6" value="56"><span class="option-dot"></span>56</label>
+      <label class="option-label"><input type="radio" name="q6" value="63"><span class="option-dot"></span>63</label>
+    </div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="question-card" data-q="7" data-answer="84">
+    <div class="q-header">
+      <div class="q-num">7</div>
+      <div class="q-text">Calculez : <strong>12 × 7 = ?</strong></div>
+    </div>
+    <div class="options">
+      <label class="option-label"><input type="radio" name="q7" value="74"><span class="option-dot"></span>74</label>
+      <label class="option-label"><input type="radio" name="q7" value="78"><span class="option-dot"></span>78</label>
+      <label class="option-label"><input type="radio" name="q7" value="82"><span class="option-dot"></span>82</label>
+      <label class="option-label"><input type="radio" name="q7" value="84"><span class="option-dot"></span>84</label>
+    </div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="question-card" data-q="8" data-answer="15">
+    <div class="q-header">
+      <div class="q-num">8</div>
+      <div class="q-text">Calculez (attention à l'ordre des opérations) : <strong>25 − 5 × 2 = ?</strong></div>
+    </div>
+    <div class="options">
+      <label class="option-label"><input type="radio" name="q8" value="10"><span class="option-dot"></span>10</label>
+      <label class="option-label"><input type="radio" name="q8" value="15"><span class="option-dot"></span>15</label>
+      <label class="option-label"><input type="radio" name="q8" value="20"><span class="option-dot"></span>20</label>
+      <label class="option-label"><input type="radio" name="q8" value="40"><span class="option-dot"></span>40</label>
+    </div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section-header">
+    <span class="section-tag">Algèbre</span>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- Q9 -->
+  <div class="question-card" data-q="9" data-answer="5">
+    <div class="q-header">
+      <div class="q-num">9</div>
+      <div class="q-text">Résolvez : <strong>x + 5 = 10</strong></div>
+    </div>
+    <div class="options">
+      <label class="option-label"><input type="radio" name="q9" value="3"><span class="option-dot"></span>x = 3</label>
+      <label class="option-label"><input type="radio" name="q9" value="5"><span class="option-dot"></span>x = 5</label>
+      <label class="option-label"><input type="radio" name="q9" value="7"><span class="option-dot"></span>x = 7</label>
+      <label class="option-label"><input type="radio" name="q9" value="15"><span class="option-dot"></span>x = 15</label>
+    </div>
+  </div>
+
+  <!-- Q10 -->
+  <div class="question-card" data-q="10" data-answer="15">
+    <div class="q-header">
+      <div class="q-num">10</div>
+      <div class="q-text">Résolvez : <strong>2x − 10 = x + 5</strong></div>
+    </div>
+    <div class="options">
+      <label class="option-label"><input type="radio" name="q10" value="5"><span class="option-dot"></span>x = 5</label>
+      <label class="option-label"><input type="radio" name="q10" value="10"><span class="option-dot"></span>x = 10</label>
+      <label class="option-label"><input type="radio" name="q10" value="15"><span class="option-dot"></span>x = 15</label>
+      <label class="option-label"><input type="radio" name="q10" value="20"><span class="option-dot"></span>x = 20</label>
+    </div>
+  </div>
+
+  <!-- SECTION 5 -->
+  <div class="section-header">
+    <span class="section-tag">Problème logique</span>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- Q11 -->
+  <div class="question-card" data-q="11" data-answer="21">
+    <div class="q-header">
+      <div class="q-num">11</div>
+      <div class="q-text">Lors du Marathon de Paris, un coureur commence à <strong>10h00</strong> et franchit la ligne à <strong>12h00</strong>. La distance d'un marathon est de <strong>42 km</strong>. Quelle est sa vitesse moyenne ?</div>
+    </div>
+    <div class="options">
+      <label class="option-label"><input type="radio" name="q11" value="18"><span class="option-dot"></span>18 km/h</label>
+      <label class="option-label"><input type="radio" name="q11" value="21"><span class="option-dot"></span>21 km/h</label>
+      <label class="option-label"><input type="radio" name="q11" value="24"><span class="option-dot"></span>24 km/h</label>
+      <label class="option-label"><input type="radio" name="q11" value="42"><span class="option-dot"></span>42 km/h</label>
+    </div>
+  </div>
+
+  <!-- Q12 -->
+  <div class="question-card" data-q="12" data-answer="91.7">
+    <div class="q-header">
+      <div class="q-num">12</div>
+      <div class="q-text">On lance deux dés à 6 faces (non truqués). Quelle est la probabilité que la somme des deux dés soit <strong>au moins 4</strong> ?</div>
+    </div>
+    <div class="options">
+      <label class="option-label"><input type="radio" name="q12" value="75"><span class="option-dot"></span>75 %</label>
+      <label class="option-label"><input type="radio" name="q12" value="83.3"><span class="option-dot"></span>83,3 %</label>
+      <label class="option-label"><input type="radio" name="q12" value="91.7"><span class="option-dot"></span>91,7 %</label>
+      <label class="option-label"><input type="radio" name="q12" value="100"><span class="option-dot"></span>100 %</label>
+    </div>
+  </div>
+
+  <!-- SECTION 6 -->
+  <div class="section-header">
+    <span class="section-tag">Aptitude verbale</span>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- Q13 -->
+  <div class="question-card" data-q="13" data-answer="HCOLUE">
+    <div class="q-header">
+      <div class="q-num">13</div>
+      <div class="q-text">Les mots suivants sont des anagrammes. L'un d'eux n'est <strong>pas un fruit</strong> — lequel ?</div>
+    </div>
+    <div class="options">
+      <label class="option-label"><input type="radio" name="q13" value="SRFAIE"><span class="option-dot"></span>SRFAIE</label>
+      <label class="option-label"><input type="radio" name="q13" value="NRICTO"><span class="option-dot"></span>NRICTO</label>
+      <label class="option-label"><input type="radio" name="q13" value="HCOLUE"><span class="option-dot"></span>HCOLUE</label>
+      <label class="option-label"><input type="radio" name="q13" value="EOTMTA"><span class="option-dot"></span>EOTMTA</label>
+    </div>
+  </div>
+
+  <!-- Q14 -->
+  <div class="question-card" data-q="14" data-answer="costume">
+    <div class="q-header">
+      <div class="q-num">14</div>
+      <div class="q-text">Laquelle de ces définitions ne correspond <strong>pas</strong> au mot « livre » ?</div>
+    </div>
+    <div class="options">
+      <label class="option-label"><input type="radio" name="q14" value="poids"><span class="option-dot"></span>Unité de poids</label>
+      <label class="option-label"><input type="radio" name="q14" value="costume"><span class="option-dot"></span>Un costume</label>
+      <label class="option-label"><input type="radio" name="q14" value="monnaie"><span class="option-dot"></span>Unité de monnaie</label>
+      <label class="option-label"><input type="radio" name="q14" value="pages"><span class="option-dot"></span>Assemblage de pages en volume</label>
+    </div>
+  </div>
+
+  <div class="submit-wrap">
+    <button class="btn-submit" onclick="submitQuiz()">Valider mes réponses →</button>
+  </div>
+
+</div>
+
+<!-- RESULTS -->
+<div id="results">
+  <div class="result-badge" id="result-emoji">🎯</div>
+  <div class="result-title" id="result-title"></div>
+  <div class="result-sub" id="result-sub"></div>
+  <div class="result-mention" id="result-mention"></div>
+  <div class="result-grid">
+    <div class="result-stat">
+      <div class="result-stat-num" id="res-score">—</div>
+      <div class="result-stat-label">Score</div>
+    </div>
+    <div class="result-stat">
+      <div class="result-stat-num" id="res-correct">—</div>
+      <div class="result-stat-label">Bonnes réponses</div>
+    </div>
+    <div class="result-stat">
+      <div class="result-stat-num" id="res-time">—</div>
+      <div class="result-stat-label">Temps utilisé</div>
+    </div>
+  </div>
+  <div class="result-bar-section" id="category-bars"></div>
+</div>
+
+<script>
+const TOTAL_TIME = 15 * 60;
+let timeLeft = TOTAL_TIME;
+let timerInterval;
+let answered = {};
+
+const questions = [
+  {q:1, answer:"12", section:"Séries numériques"},
+  {q:2, answer:"8", section:"Séries numériques"},
+  {q:3, answer:"256", section:"Séries numériques"},
+  {q:4, answer:"G", section:"Séries alphabétiques"},
+  {q:5, answer:"W", section:"Séries alphabétiques"},
+  {q:6, answer:"56", section:"Calcul mental"},
+  {q:7, answer:"84", section:"Calcul mental"},
+  {q:8, answer:"15", section:"Calcul mental"},
+  {q:9, answer:"5", section:"Algèbre"},
+  {q:10, answer:"15", section:"Algèbre"},
+  {q:11, answer:"21", section:"Problème logique"},
+  {q:12, answer:"91.7", section:"Probabilités"},
+  {q:13, answer:"HCOLUE", section:"Aptitude verbale"},
+  {q:14, answer:"costume", section:"Aptitude verbale"},
+];
+
+function formatTime(s){
+  const m=Math.floor(s/60), sec=s%60;
+  return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+}
+
+function startTimer(){
+  const el=document.getElementById('timer');
+  timerInterval = setInterval(()=>{
+    timeLeft--;
+    el.textContent = formatTime(timeLeft);
+    if(timeLeft<=300) el.className='timer-value warning';
+    if(timeLeft<=60) el.className='timer-value danger';
+    if(timeLeft<=0){ clearInterval(timerInterval); submitQuiz(); }
+  },1000);
+}
+
+function updateProgress(){
+  const total=14;
+  const done=Object.keys(answered).length;
+  document.getElementById('progress-fill').style.width=(done/total*100)+'%';
+  document.getElementById('progress-text').textContent=`${done} / ${total} répondues`;
+}
+
+document.querySelectorAll('.option-label input[type=radio]').forEach(radio=>{
+  radio.addEventListener('change',()=>{
+    answered[radio.name]=radio.value;
+    updateProgress();
+  });
+});
+
+function submitQuiz(){
+  clearInterval(timerInterval);
+  const usedTime = TOTAL_TIME - timeLeft;
+  const usedMin = Math.floor(usedTime/60), usedSec = usedTime%60;
+
+  let correct=0;
+  const sectionStats={};
+
+  questions.forEach(({q, answer, section})=>{
+    const selected = answered['q'+q];
+    const isCorrect = selected === answer;
+    if(isCorrect) correct++;
+
+    if(!sectionStats[section]) sectionStats[section]={correct:0,total:0};
+    sectionStats[section].total++;
+    if(isCorrect) sectionStats[section].correct++;
+
+    // Highlight answers
+    const card = document.querySelector(`[data-q="${q}"]`);
+    if(!card) return;
+    card.querySelectorAll('.option-label').forEach(lbl=>{
+      const inp=lbl.querySelector('input');
+      lbl.classList.add('disabled');
+      if(inp.value===answer) lbl.classList.add('correct');
+      else if(inp.checked && inp.value!==answer) lbl.classList.add('wrong');
+    });
+  });
+
+  const pct = Math.round(correct/14*100);
+  document.getElementById('quiz-main').style.display='none';
+  const res=document.getElementById('results');
+  res.style.display='block';
+
+  document.getElementById('res-score').textContent=pct+'%';
+  document.getElementById('res-correct').textContent=correct+'/14';
+  document.getElementById('res-time').textContent=`${usedMin}m${String(usedSec).padStart(2,'0')}s`;
+
+  let emoji='', title='', sub='', mentionClass='', mentionText='';
+  if(pct>=80){emoji='🏆';title='Excellent résultat !';sub='Le candidat maîtrise très bien les exercices proposés.';mentionText='Excellent';mentionClass='mention-excellent';}
+  else if(pct>=60){emoji='✅';title='Bon résultat';sub='Le candidat présente un niveau satisfaisant.';mentionText='Bien';mentionClass='mention-bien';}
+  else if(pct>=40){emoji='📊';title='Résultat moyen';sub='Quelques lacunes à approfondir lors de l\'entretien.';mentionText='Moyen';mentionClass='mention-moyen';}
+  else{emoji='⚠️';title='Résultat insuffisant';sub='Le niveau requis pour ce poste n\'est pas atteint.';mentionText='Insuffisant';mentionClass='mention-insuffisant';}
+
+  document.getElementById('result-emoji').textContent=emoji;
+  document.getElementById('result-title').textContent=title;
+  document.getElementById('result-sub').textContent=sub;
+  const mn=document.getElementById('result-mention');
+  mn.textContent=mentionText;
+  mn.className='result-mention '+mentionClass;
+
+  // Category bars
+  const barsHtml = Object.entries(sectionStats).map(([sec,{correct:c,total:t}])=>{
+    const p=Math.round(c/t*100);
+    return `<div class="rb-label"><span>${sec}</span><span>${c}/${t}</span></div>
+    <div class="rb-bg"><div class="rb-fill" style="width:${p}%"></div></div>`;
+  }).join('');
+  document.getElementById('category-bars').innerHTML=barsHtml;
+
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+startTimer();
+updateProgress();
+</script>
+</body>
+</html>
